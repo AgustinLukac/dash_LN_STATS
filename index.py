@@ -1,7 +1,7 @@
 from dash import dcc, html
 from dash.dependencies import Input, Output
 from app import app
-from pages import home, page1, page2, page3  # Importa las páginas
+from pages import home, page1, page2, page3, page4  # Importa las páginas
 
 # Define el layout principal con enlaces a cada página
 app.layout = html.Div([
@@ -19,6 +19,8 @@ def display_page(pathname):
         return page2.layout
     elif pathname == '/page3':
         return page3.layout
+    elif pathname == '/page4':
+        return page4.layout
     else:
         return home.layout  # Página por defecto
 

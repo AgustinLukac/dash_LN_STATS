@@ -53,6 +53,8 @@ layout = html.Div([
         html.Br(),
         html.A("Ir a Página 2", href="/page2"),
         html.Br(),
-        html.A("Ir a Página 3", href="/page3")
+        html.A("Ir a Página 3", href="/page3"),
+        html.Br(),
+        html.A("Ir a Página 4", href="/page4")
     ])
 ])
