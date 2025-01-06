@@ -53,7 +53,22 @@ layout = dbc.Container([
 
     #### Card para métricas
     dbc.Row([
-        dbc.Col(dbc.Card(id='points-card', body=True, color='primary', inverse=True,className="card-text text-center"), width=3),
+        dbc.Col(
+            dbc.Card(
+                dbc.CardBody([
+
+                    html.H4("Puntos", className="card-title text-center"),  # Título
+                    html.P("100", className="card-text text-center"),  # Valor principal
+                    html.P("Promedio por partido: 25", className="card-text text-center"),  # Valor adicional
+                    html.P("Máximo en un partido: 40", className="card-text text-center")  # Otro valor
+                ]),
+                id='points-card', 
+                body=True, 
+                color='primary', 
+                inverse=True,
+                className="card-text text-center"), width=3),
+
+
         dbc.Col(dbc.Card(id='rebound-card', body=True, color='info', inverse=True,className="card-text text-center"), width=3),
         dbc.Col(dbc.Card(id='assists-card', body=True, color='success', inverse=True,className="card-text text-center"), width=3),
         dbc.Col(dbc.Card(id='min-card', body=True, color='dark', inverse=True,className="card-text text-center"), width=3),
@@ -88,10 +103,20 @@ def update_player_info(selected_player):
         rebounds = metricas['RT']
         assists = metricas['AST']
         min = metricas['MIN']
+        fgm_3 = metricas['3FGM']
+        fgm_2 = metricas['2FGM']
 
         return (
+            dbc.CardBody([
+                html.H4("Anotación", className="card-title text-center"),
+                html.P(f"Puntos: {points}", className="card-text text-center"),
+                html.P(f"T3C: {fgm_3}", className="card-text text-center"),
+                html.P(f"T2C: {fgm_2}", className="card-text text-center"),
+                html.P(f"Minutos: {min}", className="card-text text-center"),
+                html.P(f"Asistencias: {assists}", className="card-text text-center")
+            ]),
             f"Minutos: {min}",
-            f"Puntos: {points}",
+            
             f"Rebotes: {rebounds}",
             f"Asistencias: {assists}"
         )
