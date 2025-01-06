@@ -16,7 +16,7 @@ layout = dbc.Container([
                 id='dropdown-team',
                 options=[
                     {'label': equipo, 'value': equipo}
-                    for equipo in df['Team'].unique()
+                    for equipo in sorted(df['Team'].unique())
                 ],
                 placeholder="Selecciona un equipo",
                 className="mb-3"
@@ -57,10 +57,8 @@ layout = dbc.Container([
             dbc.Card(
                 dbc.CardBody([
 
-                    html.H4("Puntos", className="card-title text-center"),  # Título
-                    html.P("100", className="card-text text-center"),  # Valor principal
-                    html.P("Promedio por partido: 25", className="card-text text-center"),  # Valor adicional
-                    html.P("Máximo en un partido: 40", className="card-text text-center")  # Otro valor
+                    html.P("Selecciona un equipo y un jugador para ver los datos", 
+                    className="card-text text-center text-muted")  # Otro valor
                 ]),
                 id='points-card', 
                 body=True, 
@@ -90,10 +88,10 @@ def update_players_dropdown(selected_team):
 
 # Actualizar métricas del jugador
 @callback(
-    [Output('min-card', 'children'),
-     Output('points-card', 'children'),
-     Output('rebound-card', 'children'),
-     Output('assists-card', 'children')],
+    [Output('rebound-card', 'children'),
+     Output('assists-card', 'children'),
+     Output('min-card', 'children'),
+     Output('points-card', 'children'),],
     Input('dropdown-player', 'value')
 )
 def update_player_info(selected_player):
@@ -102,23 +100,41 @@ def update_player_info(selected_player):
         points = metricas['PTS']
         rebounds = metricas['RT']
         assists = metricas['AST']
+        assists_p = metricas['AST %']
         min = metricas['MIN']
         fgm_3 = metricas['3FGM']
+        fga_3 = metricas['3FGA']
+        fga_3_p = metricas['3FG %']
+        fga_2 = metricas['2FGA']
         fgm_2 = metricas['2FGM']
+        fga_2_p = metricas['2FG %']
+        fta = metricas['FTA']
+        ftm = metricas['FTM']
+        fta_p = metricas['FT %']
+        to = metricas['TO']
+        to_p = metricas['TO %']
+        usg = metricas['USG %']
+        plays = metricas['PLAYS']
 
         return (
             dbc.CardBody([
-                html.H4("Anotación", className="card-title text-center"),
-                html.P(f"Puntos: {points}", className="card-text text-center"),
-                html.P(f"T3C: {fgm_3}", className="card-text text-center"),
-                html.P(f"T2C: {fgm_2}", className="card-text text-center"),
-                html.P(f"Minutos: {min}", className="card-text text-center"),
-                html.P(f"Asistencias: {assists}", className="card-text text-center")
+                html.H1("ANOTACIÓN",className="card-title text-center text-primary fw-bold mt-4 mb-4"),
+                html.H2(f"Puntos: {points}", className="card-text text-center"),
+                html.H4(f"T3: {fgm_3} / {fga_3} - {fga_3_p * 100:.1f} % ", className="card-text text-center"),
+                html.H4(f"T2: {fgm_2} / {fga_2} - {fga_2_p * 100:.1f} % ", className="card-text text-center"),
+                html.H4(f"T1: {ftm} / {fta} - {fta_p*100:.1f} % ", className="card-text text-center"),
+            ]),
+            dbc.CardBody([
+                html.H1("POSESIÓN",className="card-title text-center text-white fw-bold mt-4 mb-4"),
+                html.H2(f"MIN: {min}", className="card-text text-center"),
+                html.H4(f"USG %: {usg* 100:.1f} - Plays: {plays}", className="card-text text-center"),
+                html.H4(f"ASISTENCIAS: {assists} - {assists_p * 100:.1f} %", className="card-text text-center"),
+                html.H4(f"TO: {to} - {to_p*100:.1f} % ", className="card-text text-center"),
             ]),
             f"Minutos: {min}",
             
             f"Rebotes: {rebounds}",
-            f"Asistencias: {assists}"
+            
         )
     return (
         "Minutos: N/A",
