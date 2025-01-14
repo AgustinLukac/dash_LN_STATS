@@ -27,6 +27,7 @@ layout = dbc.Container([
                 placeholder="Selecciona un jugador",
                 className="mb-3"
             ),
+            
         ], width=6),
 
         # Columna para el logo
