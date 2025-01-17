@@ -1,8 +1,13 @@
 from dash import html, dcc, Input, Output, Dash, callback
 import dash_bootstrap_components as dbc
 import pandas as pd
+import plotly.graph_objs as go
 
 df = pd.read_excel("assets/Acumulados.xlsx")
+df_1 = pd.read_excel("assets/boxscore_partidos.xlsx")
+
+df_1['Fecha'] = pd.to_datetime(df_1['Fecha'], format='%d/%m/%Y', errors='coerce')
+df_1 = df_1.sort_values(by='Fecha', ascending=True)
 
 layout = dbc.Container([
     html.H1("Resumen de jugadores por equipos", className='text-center my-4'),
@@ -71,7 +76,19 @@ layout = dbc.Container([
         dbc.Col(dbc.Card(id='rebound-card', body=True, color='info', inverse=True,className="card-text text-center"), width=3),
         dbc.Col(dbc.Card(id='assists-card', body=True, color='success', inverse=True,className="card-text text-center"), width=3),
         dbc.Col(dbc.Card(id='min-card', body=True, color='dark', inverse=True,className="card-text text-center"), width=3),
-    ], class_name="my-4")
+    ], class_name="my-4"),
+
+    html.Div([
+         html.H4("Gráficos de rendmientos por partido", className='text-center my-4'),
+
+         dcc.Graph(id='graph_line'),
+         dcc.DatePickerRange(id='selector_fecha',
+                            start_date = df_1['Fecha'].min(),
+                            end_date = df_1['Fecha'].max())
+
+
+         
+    ])
 ], fluid=True)
 
 ##### CALLBACKS #####
@@ -154,3 +171,92 @@ def update_team_logo(selected_team):
         # Ruta del logo
         return f"/assets/logos/{selected_team}.png"
     return "/assets/logos/default.png"  # Imagen por defecto si no hay equipo seleccionado
+
+@callback(Output('graph_line','figure'),
+          [Input('selector_fecha','start_date'), 
+           Input('selector_fecha','end_date'),
+           Input('dropdown-player', 'value')])
+
+def actualizar_graph(fecha_min, fecha_max,selected_player):
+    filtered_df = df_1[(df_1['Fecha']>=fecha_min)&(df_1['Fecha']<=fecha_max)]
+
+    if not selected_player:
+        return {
+            'data': [],
+            'layout': go.Layout(
+                title='Rendimiento por partido',
+                xaxis={'title': 'Fecha'},
+                yaxis={'title': 'Ptos'},
+                annotations=[
+                    {
+                        'text': 'Selecciona un jugador para ver el gráfico',
+                        'xref': 'paper',
+                        'yref': 'paper',
+                        'showarrow': False,
+                        'font': {'size': 16}
+                    }
+                ]
+            )
+        }
+
+
+
+    player_data = filtered_df[filtered_df['Jugadores'] == selected_player]
+    # Calcular promedio de puntos
+    promedio_puntos = player_data['PTS'].mean()
+
+     # Crear la traza para el jugador
+    trace = go.Scatter(
+        x=player_data['Fecha'],
+        y=player_data['PTS'],
+        mode='lines+markers',
+        marker={
+            'size': 10,
+            'color': player_data['Resultado'].map({'Gano': 'green', 'Perdio': 'red'}),  # Colores según el resultado
+            'symbol': 'circle'  # Mantener los puntos como círculos
+        },
+        opacity=0.7,
+       
+        name=selected_player,
+        
+    )
+
+    images = []
+    for _, row in player_data.iterrows():
+        images.append({
+            'source': f"/assets/logos/{row['Opp']}.png",  # Ruta dinámica de los escudos
+            'x': row['Fecha'],
+            'y': row['PTS'] + 1,  # Colocar la imagen un poco por encima del punto
+            'xref': 'x',
+            'yref': 'y',
+            'xanchor': 'center',
+            'yanchor': 'bottom',
+            'sizex': 0.2,  # Tamaño en el eje x
+            'sizey': 2,  # Tamaño en el eje y
+            'opacity': 1
+        })
+
+
+    # Crear la traza para la línea de promedio
+    trace_avg = go.Scatter(
+        x=player_data['Fecha'],  # Usamos las mismas fechas del jugador
+        y=[promedio_puntos] * len(player_data),  # Línea constante con el promedio
+        mode='lines',
+        line={'dash': 'dash', 'color': 'black'},  # Línea punteada de color rojo
+        opacity=0.5,
+        name=f"Promedio: {promedio_puntos:.2f}"
+    )
+
+
+    return{
+        'data':[trace, trace_avg],
+        'layout': go.Layout(
+            title='Rendimiento por partido',
+            xaxis={'title':'Fecha'},
+            yaxis={'title':'Ptos'},
+            template='plotly_white',
+            images=images  # Incluir las imágenes en el layout
+        )
+    }
+
+
