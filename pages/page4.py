@@ -2,6 +2,8 @@ from dash import html, dcc, Input, Output, Dash, callback
 import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objs as go
+from pathlib import Path
+
 
 df = pd.read_excel("assets/Acumulados.xlsx")
 df_1 = pd.read_excel("assets/boxscore_partidos.xlsx")
@@ -177,8 +179,8 @@ def update_team_logo(selected_team):
            Input('selector_fecha','end_date'),
            Input('dropdown-player', 'value')])
 
-def actualizar_graph(fecha_min, fecha_max,selected_player):
-    filtered_df = df_1[(df_1['Fecha']>=fecha_min)&(df_1['Fecha']<=fecha_max)]
+def actualizar_graph(fecha_min, fecha_max, selected_player):
+    filtered_df = df_1[(df_1['Fecha'] >= fecha_min) & (df_1['Fecha'] <= fecha_max)]
 
     if not selected_player:
         return {
@@ -199,64 +201,57 @@ def actualizar_graph(fecha_min, fecha_max,selected_player):
             )
         }
 
-
-
     player_data = filtered_df[filtered_df['Jugadores'] == selected_player]
-    # Calcular promedio de puntos
     promedio_puntos = player_data['PTS'].mean()
 
-     # Crear la traza para el jugador
+    # Crear la traza para el jugador
     trace = go.Scatter(
         x=player_data['Fecha'],
         y=player_data['PTS'],
         mode='lines+markers',
         marker={
             'size': 10,
-            'color': player_data['Resultado'].map({'Gano': 'green', 'Perdio': 'red'}),  # Colores según el resultado
-            'symbol': 'circle'  # Mantener los puntos como círculos
+            'color': player_data['Resultado'].map({'Gano': 'green', 'Perdio': 'red'}),
+            'symbol': 'circle'
         },
         opacity=0.7,
-       
         name=selected_player,
-        
     )
 
+    # Agregar los logos como imágenes
     images = []
     for _, row in player_data.iterrows():
         images.append({
-            'source': f"/assets/logos/{row['Opp']}.png",  # Ruta dinámica de los escudos
+            'source': f"/assets/logos/{row['Opp']}.png",
             'x': row['Fecha'],
-            'y': row['PTS'] + 1,  # Colocar la imagen un poco por encima del punto
+            'y': row['PTS'] + 1,
             'xref': 'x',
             'yref': 'y',
             'xanchor': 'center',
-            'yanchor': 'bottom',
-            'sizex': 0.2,  # Tamaño en el eje x
-            'sizey': 2,  # Tamaño en el eje y
+            'yanchor': 'middle',
+            'sizex': 0.5,  # Ajusta el tamaño
+            'sizey': 0.5,  # Ajusta el tamaño
             'opacity': 1
         })
 
-
     # Crear la traza para la línea de promedio
     trace_avg = go.Scatter(
-        x=player_data['Fecha'],  # Usamos las mismas fechas del jugador
-        y=[promedio_puntos] * len(player_data),  # Línea constante con el promedio
+        x=player_data['Fecha'],
+        y=[promedio_puntos] * len(player_data),
         mode='lines',
-        line={'dash': 'dash', 'color': 'black'},  # Línea punteada de color rojo
+        line={'dash': 'dash', 'color': 'black'},
         opacity=0.5,
         name=f"Promedio: {promedio_puntos:.2f}"
     )
 
-
-    return{
-        'data':[trace, trace_avg],
+    return {
+        'data': [trace, trace_avg],
         'layout': go.Layout(
             title='Rendimiento por partido',
-            xaxis={'title':'Fecha'},
-            yaxis={'title':'Ptos'},
+            xaxis={'title': 'Fecha'},
+            yaxis={'title': 'Ptos'},
             template='plotly_white',
-            images=images  # Incluir las imágenes en el layout
+            images=images  # Incluye las imágenes en el layout
         )
     }
-
 
