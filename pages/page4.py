@@ -3,6 +3,8 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.graph_objs as go
 from pathlib import Path
+import plotly.express as px  # Importar Plotly Express
+from pathlib import Path
 
 
 df = pd.read_excel("assets/Acumulados.xlsx")
@@ -162,96 +164,183 @@ def update_player_info(selected_player):
         "Rebotes: N/A",
         "Asistencias: N/A",
     )
+##################################################################################################
+# # Actualizar logo del equipo
+# @callback(
+#     Output('team-logo', 'src'),
+#     Input('dropdown-team', 'value')
+# )
+# def update_team_logo(selected_team):
+#     if selected_team:
+#         # Ruta del logo
+#         return f"/assets/logos/{selected_team}.png"
+#     return "/assets/logos/default.png"  # Imagen por defecto si no hay equipo seleccionado
+##################################################################################################
 
-# Actualizar logo del equipo
-@callback(
-    Output('team-logo', 'src'),
-    Input('dropdown-team', 'value')
-)
-def update_team_logo(selected_team):
-    if selected_team:
-        # Ruta del logo
-        return f"/assets/logos/{selected_team}.png"
-    return "/assets/logos/default.png"  # Imagen por defecto si no hay equipo seleccionado
+# @callback(Output('graph_line','figure'),
+#           [Input('selector_fecha','start_date'), 
+#            Input('selector_fecha','end_date'),
+#            Input('dropdown-player', 'value')])
 
-@callback(Output('graph_line','figure'),
-          [Input('selector_fecha','start_date'), 
-           Input('selector_fecha','end_date'),
+# def actualizar_graph(fecha_min, fecha_max, selected_player):
+#     filtered_df = df_1[(df_1['Fecha'] >= fecha_min) & (df_1['Fecha'] <= fecha_max)]
+
+#     if not selected_player:
+#         return {
+#             'data': [],
+#             'layout': go.Layout(
+#                 title='Rendimiento por partido',
+#                 xaxis={'title': 'Fecha'},
+#                 yaxis={'title': 'Ptos'},
+#                 annotations=[
+#                     {
+#                         'text': 'Selecciona un jugador para ver el gráfico',
+#                         'xref': 'paper',
+#                         'yref': 'paper',
+#                         'showarrow': False,
+#                         'font': {'size': 16}
+#                     }
+#                 ]
+#             )
+#         }
+
+#     player_data = filtered_df[filtered_df['Jugadores'] == selected_player]
+#     promedio_puntos = player_data['PTS'].mean()
+
+#     # Crear la traza para el jugador
+#     trace = go.Scatter(
+#         x=player_data['Fecha'],
+#         y=player_data['PTS'],
+#         mode='lines+markers',
+#         marker={
+#             'size': 10,
+#             'color': player_data['Resultado'].map({'Gano': 'green', 'Perdio': 'red'}),
+#             'symbol': 'circle'
+#         },
+#         opacity=0.7,
+#         name=selected_player,
+#     )
+
+#     # Agregar los logos como imágenes
+#     images = []
+#     for _, row in player_data.iterrows():
+#         images.append({
+#             'source': f"/assets/logos/{row['Opp']}.png",
+#             'x': row['Fecha'],
+#             'y': row['PTS'] + 1,
+#             'xref': 'x',
+#             'yref': 'y',
+#             'xanchor': 'center',
+#             'yanchor': 'middle',
+#             'sizex': 0.5,  # Ajusta el tamaño
+#             'sizey': 0.5,  # Ajusta el tamaño
+#             'opacity': 1
+#         })
+
+#     # Crear la traza para la línea de promedio
+#     trace_avg = go.Scatter(
+#         x=player_data['Fecha'],
+#         y=[promedio_puntos] * len(player_data),
+#         mode='lines',
+#         line={'dash': 'dash', 'color': 'black'},
+#         opacity=0.5,
+#         name=f"Promedio: {promedio_puntos:.2f}"
+#     )
+
+#     return {
+#         'data': [trace, trace_avg],
+#         'layout': go.Layout(
+#             title='Rendimiento por partido',
+#             xaxis={'title': 'Fecha'},
+#             yaxis={'title': 'Ptos'},
+#             template='plotly_white',
+#             images=images  # Incluye las imágenes en el layout
+#         )
+#     }
+
+
+
+
+@callback(Output('graph_line', 'figure'),
+          [Input('selector_fecha', 'start_date'),
+           Input('selector_fecha', 'end_date'),
            Input('dropdown-player', 'value')])
-
 def actualizar_graph(fecha_min, fecha_max, selected_player):
+    # Filtrar el DataFrame por las fechas seleccionadas
     filtered_df = df_1[(df_1['Fecha'] >= fecha_min) & (df_1['Fecha'] <= fecha_max)]
 
     if not selected_player:
-        return {
-            'data': [],
-            'layout': go.Layout(
-                title='Rendimiento por partido',
-                xaxis={'title': 'Fecha'},
-                yaxis={'title': 'Ptos'},
-                annotations=[
-                    {
-                        'text': 'Selecciona un jugador para ver el gráfico',
-                        'xref': 'paper',
-                        'yref': 'paper',
-                        'showarrow': False,
-                        'font': {'size': 16}
-                    }
-                ]
-            )
-        }
+        return px.scatter(title="Selecciona un jugador para ver el gráfico")
 
+    # Filtrar por el jugador seleccionado
     player_data = filtered_df[filtered_df['Jugadores'] == selected_player]
+
+    # Ordenar por fecha y asignar IDs secuenciales
+    player_data = player_data.sort_values(by='Fecha').reset_index(drop=True)
+    player_data['ID'] = range(1, len(player_data) + 1)
+
     promedio_puntos = player_data['PTS'].mean()
 
-    # Crear la traza para el jugador
-    trace = go.Scatter(
-        x=player_data['Fecha'],
+    # Crear gráfico principal con Plotly Express usando 'ID' en lugar de 'Fecha'
+    fig = px.scatter(
+        player_data,
+        x='ID',  # Usar la columna ID como eje X
+        y='PTS',
+        color='Resultado',
+        color_discrete_map={'Gano': 'green', 'Perdio': 'red'},
+        title="Rendimiento por partido",
+        labels={'ID': 'Partido (ID)', 'PTS': 'Puntos'},
+        template='plotly_white'
+    )
+
+    # Ajustar tamaño de los marcadores rojos y verdes
+    fig.update_traces(
+        marker=dict(size=12)  # Tamaño ajustado para los marcadores
+    )
+
+    # Agregar una línea azul que conecte todos los puntos
+    fig.add_scatter(
+        x=player_data['ID'],
         y=player_data['PTS'],
-        mode='lines+markers',
-        marker={
-            'size': 10,
-            'color': player_data['Resultado'].map({'Gano': 'green', 'Perdio': 'red'}),
-            'symbol': 'circle'
-        },
-        opacity=0.7,
-        name=selected_player,
+        mode='lines',  # Solo línea, sin marcadores
+        line=dict(color='blue', width=1),  # Línea azul
+        name='Conexión',
+        opacity=0.5
+    )
+
+    # Agregar una línea de promedio
+    fig.add_scatter(
+        x=player_data['ID'],
+        y=[promedio_puntos] * len(player_data),
+        mode='lines',
+        line=dict(dash='dash', color='black'),
+        name=f"Promedio: {promedio_puntos:.2f}",
+        opacity=0.5
     )
 
     # Agregar los logos como imágenes
-    images = []
     for _, row in player_data.iterrows():
-        images.append({
-            'source': f"/assets/logos/{row['Opp']}.png",
-            'x': row['Fecha'],
-            'y': row['PTS'] + 1,
-            'xref': 'x',
-            'yref': 'y',
-            'xanchor': 'center',
-            'yanchor': 'middle',
-            'sizex': 0.5,  # Ajusta el tamaño
-            'sizey': 0.5,  # Ajusta el tamaño
-            'opacity': 1
-        })
+        logo_path = f"assets/logos/{row['Opp']}.png"
+        if Path(logo_path).exists():
+            #print(f"Logo: {logo_path}, ID: {row['ID']}, Y: {row['PTS'] + 1}")
+            fig.add_layout_image(
+                source=f"/{logo_path}",
+                x=row['ID'],  # Usar la ID como eje X
+                y=row['PTS'] + 2.5,  # Colocar un poco por encima del punto
+                xref="x",
+                yref="y",
+                xanchor="center",
+                yanchor="middle",
+                sizex=3,  # Tamaño ajustado
+                sizey=3,
+                opacity=1  # Máxima opacidad
+            )
 
-    # Crear la traza para la línea de promedio
-    trace_avg = go.Scatter(
-        x=player_data['Fecha'],
-        y=[promedio_puntos] * len(player_data),
-        mode='lines',
-        line={'dash': 'dash', 'color': 'black'},
-        opacity=0.5,
-        name=f"Promedio: {promedio_puntos:.2f}"
+    # Ajustar el rango de los ejes
+    fig.update_layout(
+        xaxis=dict(title="Partido (ID)", automargin=True),
+        yaxis=dict(title="Puntos", range=[0, player_data['PTS'].max() + 10]),
+        margin=dict(l=20, r=20, t=40, b=20),
     )
 
-    return {
-        'data': [trace, trace_avg],
-        'layout': go.Layout(
-            title='Rendimiento por partido',
-            xaxis={'title': 'Fecha'},
-            yaxis={'title': 'Ptos'},
-            template='plotly_white',
-            images=images  # Incluye las imágenes en el layout
-        )
-    }
-
+    return fig
