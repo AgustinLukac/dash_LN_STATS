@@ -83,16 +83,50 @@ layout = dbc.Container([
     ], class_name="my-4"),
 
     html.Div([
-         html.H4("Gráficos de rendmientos por partido", className='text-center my-4'),
+    html.H4("Gráficos de rendimientos por partido", className='text-center my-4'),
 
-         dcc.Graph(id='graph_line'),
-         dcc.DatePickerRange(id='selector_fecha',
-                            start_date = df_1['Fecha'].min(),
-                            end_date = df_1['Fecha'].max())
+    html.Div(
+        [
+            html.Label(
+                "Selecciona el rango de fechas:         ",
+                style={
+                    'font-size': '18px', 
+                    'font-weight': 'bold',
+                    'margin-bottom': '10px',
+                    
+                    }
+                ),
+            dcc.DatePickerRange(
+                id='selector_fecha',
+                start_date=df_1['Fecha'].min(),
+                end_date=df_1['Fecha'].max(),
+                display_format='DD/MM/YYYY',  # Formato de fecha dd/mm/yyyy
+                start_date_placeholder_text='Inicio',
+                end_date_placeholder_text='Fin',
+                className='custom-date-picker',
+                style={
+                    'border': '1px solid #ccc',
+                    'border-radius': '5px',
+                    'padding': '5px',
+                    'font-weight': 'bold',
+                    'margin-left': '10px',
+                    
+                }
+            )
+        ],
+        style={
+            'margin-bottom': '20px',
+            'padding': '10px',
+            'border': '1px solid #ccc',
+            'border-radius': '5px',
+            'background-color': '#f9f9f9',
+            'box-shadow': '0px 2px 5px rgba(0, 0, 0, 0.1)'
+        }
+    ),
 
-
-         
+    dcc.Graph(id='graph_line')
     ])
+
 ], fluid=True)
 
 ##### CALLBACKS #####
@@ -165,101 +199,16 @@ def update_player_info(selected_player):
         "Asistencias: N/A",
     )
 ##################################################################################################
-# # Actualizar logo del equipo
-# @callback(
-#     Output('team-logo', 'src'),
-#     Input('dropdown-team', 'value')
-# )
-# def update_team_logo(selected_team):
-#     if selected_team:
-#         # Ruta del logo
-#         return f"/assets/logos/{selected_team}.png"
-#     return "/assets/logos/default.png"  # Imagen por defecto si no hay equipo seleccionado
-##################################################################################################
-
-# @callback(Output('graph_line','figure'),
-#           [Input('selector_fecha','start_date'), 
-#            Input('selector_fecha','end_date'),
-#            Input('dropdown-player', 'value')])
-
-# def actualizar_graph(fecha_min, fecha_max, selected_player):
-#     filtered_df = df_1[(df_1['Fecha'] >= fecha_min) & (df_1['Fecha'] <= fecha_max)]
-
-#     if not selected_player:
-#         return {
-#             'data': [],
-#             'layout': go.Layout(
-#                 title='Rendimiento por partido',
-#                 xaxis={'title': 'Fecha'},
-#                 yaxis={'title': 'Ptos'},
-#                 annotations=[
-#                     {
-#                         'text': 'Selecciona un jugador para ver el gráfico',
-#                         'xref': 'paper',
-#                         'yref': 'paper',
-#                         'showarrow': False,
-#                         'font': {'size': 16}
-#                     }
-#                 ]
-#             )
-#         }
-
-#     player_data = filtered_df[filtered_df['Jugadores'] == selected_player]
-#     promedio_puntos = player_data['PTS'].mean()
-
-#     # Crear la traza para el jugador
-#     trace = go.Scatter(
-#         x=player_data['Fecha'],
-#         y=player_data['PTS'],
-#         mode='lines+markers',
-#         marker={
-#             'size': 10,
-#             'color': player_data['Resultado'].map({'Gano': 'green', 'Perdio': 'red'}),
-#             'symbol': 'circle'
-#         },
-#         opacity=0.7,
-#         name=selected_player,
-#     )
-
-#     # Agregar los logos como imágenes
-#     images = []
-#     for _, row in player_data.iterrows():
-#         images.append({
-#             'source': f"/assets/logos/{row['Opp']}.png",
-#             'x': row['Fecha'],
-#             'y': row['PTS'] + 1,
-#             'xref': 'x',
-#             'yref': 'y',
-#             'xanchor': 'center',
-#             'yanchor': 'middle',
-#             'sizex': 0.5,  # Ajusta el tamaño
-#             'sizey': 0.5,  # Ajusta el tamaño
-#             'opacity': 1
-#         })
-
-#     # Crear la traza para la línea de promedio
-#     trace_avg = go.Scatter(
-#         x=player_data['Fecha'],
-#         y=[promedio_puntos] * len(player_data),
-#         mode='lines',
-#         line={'dash': 'dash', 'color': 'black'},
-#         opacity=0.5,
-#         name=f"Promedio: {promedio_puntos:.2f}"
-#     )
-
-#     return {
-#         'data': [trace, trace_avg],
-#         'layout': go.Layout(
-#             title='Rendimiento por partido',
-#             xaxis={'title': 'Fecha'},
-#             yaxis={'title': 'Ptos'},
-#             template='plotly_white',
-#             images=images  # Incluye las imágenes en el layout
-#         )
-#     }
-
-
-
+# Actualizar logo del equipo
+@callback(
+    Output('team-logo', 'src'),
+    Input('dropdown-team', 'value')
+)
+def update_team_logo(selected_team):
+    if selected_team:
+        # Ruta del logo
+        return f"/assets/logos/{selected_team}.png"
+    return "/assets/logos/default.png"  # Imagen por defecto si no hay equipo seleccionado
 
 @callback(Output('graph_line', 'figure'),
           [Input('selector_fecha', 'start_date'),
@@ -281,66 +230,97 @@ def actualizar_graph(fecha_min, fecha_max, selected_player):
 
     promedio_puntos = player_data['PTS'].mean()
 
-    # Crear gráfico principal con Plotly Express usando 'ID' en lugar de 'Fecha'
-    fig = px.scatter(
-        player_data,
-        x='ID',  # Usar la columna ID como eje X
-        y='PTS',
-        color='Resultado',
-        color_discrete_map={'Gano': 'green', 'Perdio': 'red'},
-        title="Rendimiento por partido",
-        labels={'ID': 'Partido (ID)', 'PTS': 'Puntos'},
-        template='plotly_white'
+    # Crear una columna de texto personalizada para las tooltips
+    player_data['hover_text'] = (
+        'Fecha: ' + player_data['Fecha'].dt.strftime('%d-%m-%Y') + '<br>' +
+        'Condición: ' + player_data['Condición'] + '<br>' +
+        'Puntos: ' + player_data['PTS'].astype(str)
     )
 
-    # Ajustar tamaño de los marcadores rojos y verdes
-    fig.update_traces(
-        marker=dict(size=12)  # Tamaño ajustado para los marcadores
-    )
 
-    # Agregar una línea azul que conecte todos los puntos
-    fig.add_scatter(
+
+    # Crear el gráfico en Plotly
+    fig = go.Figure()
+
+    # Agregar la línea azul primero
+    fig.add_trace(go.Scatter(
         x=player_data['ID'],
         y=player_data['PTS'],
-        mode='lines',  # Solo línea, sin marcadores
-        line=dict(color='blue', width=1),  # Línea azul
+        mode='lines',
+        line=dict(color='blue', width=1),
         name='Conexión',
-        opacity=0.5
-    )
+        opacity=0.5,
+        hoverinfo='skip'
+    ))
 
     # Agregar una línea de promedio
-    fig.add_scatter(
+    fig.add_trace(go.Scatter(
         x=player_data['ID'],
         y=[promedio_puntos] * len(player_data),
         mode='lines',
-        line=dict(dash='dash', color='black'),
+        line=dict(dash='dash', color='white'),
         name=f"Promedio: {promedio_puntos:.2f}",
-        opacity=0.5
-    )
+        opacity=0.7,
+        hoverinfo='skip'
+    ))
+
+    # Agregar los puntos rojos y verdes según el resultado
+    colores = {'Gano': 'green', 'Perdio': 'red'}
+    for resultado, color in colores.items():
+        subset = player_data[player_data['Resultado'] == resultado]
+        fig.add_trace(go.Scatter(
+            x=subset['ID'],
+            y=subset['PTS'],
+            mode='markers',
+            marker=dict(color=color, size=12),
+            text=subset['hover_text'],  # Texto personalizado para tooltips
+            hoverinfo='text',  # Mostrar solo el texto personalizado
+            name=resultado
+        ))
+
+        # Agregar texto con los puntos 2.5 unidades abajo del punto
+    for _, row in player_data.iterrows():
+        fig.add_trace(go.Scatter(
+            x=[row['ID']],
+            y=[row['PTS'] - 1.5],  # Colocar 2.5 unidades abajo del punto
+            mode='text',
+            text=[f"{row['PTS']}"],  # Texto con los puntos
+            textfont=dict(color="white", size=14),  # Formato del texto
+            showlegend=False,
+            hoverinfo='skip'
+        ))
 
     # Agregar los logos como imágenes
     for _, row in player_data.iterrows():
         logo_path = f"assets/logos/{row['Opp']}.png"
         if Path(logo_path).exists():
-            #print(f"Logo: {logo_path}, ID: {row['ID']}, Y: {row['PTS'] + 1}")
             fig.add_layout_image(
                 source=f"/{logo_path}",
-                x=row['ID'],  # Usar la ID como eje X
-                y=row['PTS'] + 2.5,  # Colocar un poco por encima del punto
+                x=row['ID'],
+                y=row['PTS'] + 2.5,
                 xref="x",
                 yref="y",
                 xanchor="center",
                 yanchor="middle",
-                sizex=3,  # Tamaño ajustado
+                sizex=3,
                 sizey=3,
-                opacity=1  # Máxima opacidad
+                opacity=1
             )
 
-    # Ajustar el rango de los ejes
+    # Ajustar el rango de los ejes y otros detalles
     fig.update_layout(
-        xaxis=dict(title="Partido (ID)", automargin=True),
-        yaxis=dict(title="Puntos", range=[0, player_data['PTS'].max() + 10]),
-        margin=dict(l=20, r=20, t=40, b=20),
+        xaxis=dict(title="Partido (ID)",
+                visible=False,  # Ocultar el eje X 
+                automargin=True,
+                showgrid=False,
+                zeroline=False),
+        yaxis=dict(title="Puntos", 
+                range=[-5, player_data['PTS'].max() + 10],
+                tickvals=[i for i in range(0, player_data['PTS'].max() + 11, 5)],  # Escala visible desde 0
+                ticktext=[str(i) for i in range(0, player_data['PTS'].max() + 11, 5)],  # Etiquetas visibles desde 0
+                zeroline=False),
+        margin=dict(l=20, r=20, t=40, b=10),
+        template='plotly_dark'
     )
 
     return fig

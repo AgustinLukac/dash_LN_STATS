@@ -1,0 +1,27 @@
+
+
+.custom-date-picker input {
+    font-weight: bold; /* Texto en negrita */
+    color: #333;       /* Color oscuro del texto */
+    font-size: 16px;   /* Tamaño del texto */
+    padding: 10px;     /* Espaciado interno para un diseño más cómodo */
+    background-color: #f0f0f0; /* Color de fondo del campo */
+    border: 2px solid #ccc;    /* Borde del campo */
+    border-radius: 5px;        /* Bordes redondeados */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Sombra para darle profundidad */
+    transition: all 0.3s ease; /* Transición suave al interactuar */
+}
+
+/* Cambios al hacer foco en el campo */
+.custom-date-picker input:focus {
+    border-color: #007bff;     /* Color del borde cuando está en foco */
+    background-color: #ffffff; /* Fondo blanco al hacer foco */
+    outline: none;             /* Eliminar borde azul predeterminado */
+    box-shadow: 0px 4px 8px rgba(0, 123, 255, 0.3); /* Sombra más intensa */
+}
+
+/* Placeholder (texto predeterminado "Inicio" y "Fin") */
+.custom-date-picker input::placeholder {
+    font-style: italic; /* Texto en cursiva */
+    color: #999;        /* Color gris claro */
+}
