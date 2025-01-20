@@ -191,6 +191,10 @@ def update_player_info(selected_player):
         metricas = df[df['Jugadores'] == selected_player].iloc[0]
         points = metricas['PTS']
         rebounds = metricas['RT']
+        rebounds_def = metricas['DEF REB']
+        rebounds_def_p = metricas['RD%']
+        rebounds_of = metricas['OFF REB']
+        rebounds_of_p = metricas['RO%']
         assists = metricas['AST']
         assists_p = metricas['AST %']
         min = metricas['MIN']
@@ -256,9 +260,27 @@ def update_player_info(selected_player):
                 ], className="text-center mb-3"),
             ]),
 
-              dbc.CardBody([
-                html.H3("N/A", className="stat-value"),
-                html.P("Minutos", className="stat-label")
+            dbc.CardBody([
+                html.H2("REBOTES", className="card-title", **{"data-text": "REBOTES"}),
+                html.Div([
+                    html.H3(f"{rebounds}", className="stat-value"),
+                    html.P("RT", className="stat-label")
+                ], className="text-center mb-4"),
+                html.Div([
+                    html.H4(f"{rebounds_of} - {rebounds_of_p * 100:.1f} %",
+                        className="stat-value"),
+                    html.P("RO - RO %", className="stat-label")
+                ], className="text-center mb-3"),
+                html.Div([
+                    html.H4(f"{rebounds_def} - {rebounds_def_p * 100:.1f} %",
+                        className="stat-value"),
+                    html.P("RD - RD %", className="stat-label")
+                ], className="text-center mb-3"),
+                # html.Div([
+                #     html.H4(f"{to} - {to_p*100:.1f} %",
+                #         className="stat-value"),
+                #     html.P("TO - TO %", className="stat-label")
+                # ], className="text-center mb-3"),
             ]),
 
             dbc.CardBody([
