@@ -25,3 +25,143 @@
     font-style: italic; /* Texto en cursiva */
     color: #999;        /* Color gris claro */
 }
+
+/* Futuristic Dashboard Theme */
+:root {
+    --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    --card-bg-dark: rgba(16, 20, 34, 0.95);
+    --card-bg-hover: rgba(26, 32, 53, 0.98);
+    --neon-blue: #00f7ff;
+    --neon-purple: #bc13fe;
+  }
+  
+  /* Card Base Styles */
+  .dashboard-card {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .dashboard-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .dashboard-card:hover::before {
+    opacity: 1;
+  }
+  
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.45);
+  }
+  
+  /* Card Variants */
+  #points-card {
+    background: var(--card-bg-dark);
+  }
+  
+  #rebound-card {
+    background: var(--card-bg-dark);
+  }
+  
+  #assists-card {
+    background: var(--card-bg-dark);
+  }
+  
+  #min-card {
+    background: var(--card-bg-dark);
+  }
+  
+  /* Typography */
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    color: var(--neon-blue);
+    text-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+  
+  .card-title::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 50%; /* Coloca el centro del pseudo-elemento en la mitad del contenedor */
+    top: 50%; /* Coloca el centro del pseudo-elemento en la mitad vertical */
+    transform: translate(-50%, -50%); /* Ajusta para centrar completamente */
+    color: var(--neon-purple);
+    filter: blur(1px);
+    z-index: -1; /* Mantiene el pseudo-elemento detrás del texto principal */
+    text-align: center; /* Centra el texto si tiene varias líneas */
+    white-space: nowrap; /* Asegura que el texto no se divida en varias líneas */
+    font-size: inherit; /* Hereda el tamaño de fuente del texto principal */
+    font-weight: inherit; /* Hereda el peso de fuente */
+    letter-spacing: inherit; /* Hereda el espaciado entre letras */
+    line-height: inherit; /* Asegura que el line-height sea igual */
+}   
+  
+  .card-text {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+  
+  /* Stats Display */
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+  }
+  
+  .stat-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  /* Animations */
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+  }
+  
+  .dashboard-card:hover .stat-value {
+    animation: pulse 1.5s infinite;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .card-title {
+        font-size: 1.2rem; /* Ajusta el tamaño del texto principal */
+    }
+    .card-title::after {
+        font-size: 1.2rem; /* Ajusta el pseudo-elemento al tamaño del texto principal */
+    }
+}
+
+@media (max-width: 480px) {
+    .card-title {
+        font-size: 1rem; /* Texto más pequeño para pantallas pequeñas */
+    }
+    .card-title::after {
+        font-size: 1rem; /* Texto generado igual al tamaño del texto principal */
+    }
+}

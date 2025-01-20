@@ -61,26 +61,61 @@ layout = dbc.Container([
         ], width=6)
     ]),
 
-    #### Card para métricas
+    # #### Card para métricas
+    # dbc.Row([
+    #     dbc.Col(
+    #         dbc.Card(
+    #             dbc.CardBody([
+
+    #                 html.P("Selecciona un equipo y un jugador para ver los datos", 
+    #                 className="card-text text-center text-muted")  # Otro valor
+    #             ]),
+    #             id='points-card', 
+    #             body=True, 
+    #             color='primary', 
+    #             inverse=True,
+    #             className="card-text text-center"), width=3),
+
+
+    #     dbc.Col(dbc.Card(id='rebound-card', body=True, color='info', inverse=True,className="card-text text-center"), width=3),
+    #     dbc.Col(dbc.Card(id='assists-card', body=True, color='success', inverse=True,className="card-text text-center"), width=3),
+    #     dbc.Col(dbc.Card(id='min-card', body=True, color='dark', inverse=True,className="card-text text-center"), width=3),
+    # ], class_name="my-4"),
+
     dbc.Row([
         dbc.Col(
             dbc.Card(
                 dbc.CardBody([
-
-                    html.P("Selecciona un equipo y un jugador para ver los datos", 
-                    className="card-text text-center text-muted")  # Otro valor
+                    html.P("Selecciona un equipo y un jugador para ver los datos",
+                        className="card-text text-center")
                 ]),
-                id='points-card', 
-                body=True, 
-                color='primary', 
-                inverse=True,
-                className="card-text text-center"), width=3),
-
-
-        dbc.Col(dbc.Card(id='rebound-card', body=True, color='info', inverse=True,className="card-text text-center"), width=3),
-        dbc.Col(dbc.Card(id='assists-card', body=True, color='success', inverse=True,className="card-text text-center"), width=3),
-        dbc.Col(dbc.Card(id='min-card', body=True, color='dark', inverse=True,className="card-text text-center"), width=3),
-    ], class_name="my-4"),
+                id='points-card',
+                body=True,
+                className="dashboard-card"
+            ), width=3
+        ),
+        dbc.Col(
+            dbc.Card(
+                id='rebound-card',
+                body=True,
+                className="dashboard-card"
+            ), width=3
+        ),
+        dbc.Col(
+            dbc.Card(
+                id='assists-card',
+                body=True,
+                className="dashboard-card"
+            ), width=3
+        ),
+        dbc.Col(
+            dbc.Card(
+                id='min-card',
+                body=True,
+                className="dashboard-card"
+            ), width=3
+        ),
+    ], class_name="my-4 g-3"),
 
     html.Div([
     html.H4("Gráficos de rendimientos por partido", className='text-center my-4'),
@@ -144,10 +179,11 @@ def update_players_dropdown(selected_team):
 
 # Actualizar métricas del jugador
 @callback(
-    [Output('rebound-card', 'children'),
+    [ Output('points-card', 'children'),
+     Output('rebound-card', 'children'),
      Output('assists-card', 'children'),
      Output('min-card', 'children'),
-     Output('points-card', 'children'),],
+    ],
     Input('dropdown-player', 'value')
 )
 def update_player_info(selected_player):
@@ -173,30 +209,87 @@ def update_player_info(selected_player):
         plays = metricas['PLAYS']
 
         return (
+
             dbc.CardBody([
-                html.H1("ANOTACIÓN",className="card-title text-center text-primary fw-bold mt-4 mb-4"),
-                html.H2(f"Puntos: {points}", className="card-text text-center"),
-                html.H4(f"T3: {fgm_3} / {fga_3} - {fga_3_p * 100:.1f} % ", className="card-text text-center"),
-                html.H4(f"T2: {fgm_2} / {fga_2} - {fga_2_p * 100:.1f} % ", className="card-text text-center"),
-                html.H4(f"T1: {ftm} / {fta} - {fta_p*100:.1f} % ", className="card-text text-center"),
+                html.H2("ANOTACIÓN", className="card-title", **{"data-text": "ANOTACIÓN"}),
+                html.Div([
+                    html.H3(f"{points}", className="stat-value"),
+                    html.P("Puntos", className="stat-label")
+                ], className="text-center mb-4"),
+                html.Div([
+                    html.H4(f"{fgm_3} / {fga_3} - {fga_3_p * 100:.1f}%",
+                        className="stat-value"),
+                    html.P("Tiros de 3", className="stat-label")
+                ], className="text-center mb-3"),
+                html.Div([
+                    html.H4(f"{fgm_2} / {fga_2} - {fga_2_p * 100:.1f}%",
+                        className="stat-value"),
+                    html.P("Tiros de 2", className="stat-label")
+                ], className="text-center mb-3"),
+                html.Div([
+                    html.H4(f"{ftm} / {fta} - {fta_p * 100:.1f}%",
+                        className="stat-value"),
+                    html.P("Tiros de 1", className="stat-label")
+                ], className="text-center mb-3"),
             ]),
+
             dbc.CardBody([
-                html.H1("POSESIÓN",className="card-title text-center text-white fw-bold mt-4 mb-4"),
-                html.H2(f"MIN: {min}", className="card-text text-center"),
-                html.H4(f"USG %: {usg* 100:.1f} - Plays: {plays}", className="card-text text-center"),
-                html.H4(f"ASISTENCIAS: {assists} - {assists_p * 100:.1f} %", className="card-text text-center"),
-                html.H4(f"TO: {to} - {to_p*100:.1f} % ", className="card-text text-center"),
+                html.H2("POSESIÓN", className="card-title", **{"data-text": "POSESIÓN"}),
+                html.Div([
+                    html.H3(f"{min}", className="stat-value"),
+                    html.P("Minutos", className="stat-label")
+                ], className="text-center mb-4"),
+                html.Div([
+                    html.H4(f"{usg* 100:.1f} % - {plays}",
+                        className="stat-value"),
+                    html.P("USG % - PLAYS", className="stat-label")
+                ], className="text-center mb-3"),
+                html.Div([
+                    html.H4(f"{assists} - {assists_p * 100:.1f}%",
+                        className="stat-value"),
+                    html.P("AST - AST %", className="stat-label")
+                ], className="text-center mb-3"),
+                html.Div([
+                    html.H4(f"{to} - {to_p*100:.1f} %",
+                        className="stat-value"),
+                    html.P("TO - TO %", className="stat-label")
+                ], className="text-center mb-3"),
             ]),
-            f"Minutos: {min}",
+
+              dbc.CardBody([
+                html.H3("N/A", className="stat-value"),
+                html.P("Minutos", className="stat-label")
+            ]),
+
+            dbc.CardBody([
+                html.H3("N/A", className="stat-value"),
+                html.P("Rebotes", className="stat-label")
+            ])
             
-            f"Rebotes: {rebounds}",
             
         )
     return (
-        "Minutos: N/A",
-        "Puntos: N/A",
-        "Rebotes: N/A",
-        "Asistencias: N/A",
+
+        dbc.CardBody([
+            html.H3("N/A", className="stat-value"),
+            html.P("Anotación", className="stat-label")
+        ]),
+
+        dbc.CardBody([
+            html.H3("N/A", className="stat-value"),
+            html.P("Posesión", className="stat-label")
+        ]),
+
+        dbc.CardBody([
+            html.H3("N/A", className="stat-value"),
+            html.P("Minutos", className="stat-label")
+        ]),
+
+        dbc.CardBody([
+            html.H3("N/A", className="stat-value"),
+            html.P("Rebotes", className="stat-label")
+        ])
+        
     )
 ##################################################################################################
 # Actualizar logo del equipo
@@ -260,7 +353,7 @@ def actualizar_graph(fecha_min, fecha_max, selected_player):
         mode='lines',
         line=dict(dash='dash', color='white'),
         name=f"Promedio: {promedio_puntos:.2f}",
-        opacity=0.7,
+        opacity=0.5,
         hoverinfo='skip'
     ))
 
