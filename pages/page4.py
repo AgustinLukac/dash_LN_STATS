@@ -61,27 +61,6 @@ layout = dbc.Container([
         ], width=6)
     ]),
 
-    # #### Card para métricas
-    # dbc.Row([
-    #     dbc.Col(
-    #         dbc.Card(
-    #             dbc.CardBody([
-
-    #                 html.P("Selecciona un equipo y un jugador para ver los datos", 
-    #                 className="card-text text-center text-muted")  # Otro valor
-    #             ]),
-    #             id='points-card', 
-    #             body=True, 
-    #             color='primary', 
-    #             inverse=True,
-    #             className="card-text text-center"), width=3),
-
-
-    #     dbc.Col(dbc.Card(id='rebound-card', body=True, color='info', inverse=True,className="card-text text-center"), width=3),
-    #     dbc.Col(dbc.Card(id='assists-card', body=True, color='success', inverse=True,className="card-text text-center"), width=3),
-    #     dbc.Col(dbc.Card(id='min-card', body=True, color='dark', inverse=True,className="card-text text-center"), width=3),
-    # ], class_name="my-4"),
-
     dbc.Row([
         dbc.Col(
             dbc.Card(
