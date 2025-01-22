@@ -165,3 +165,19 @@
         font-size: 1rem; /* Texto generado igual al tamaño del texto principal */
     }
 }
+
+
+.stat-value1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #090909;
+  text-shadow: 0 0 10px rgba(16, 16, 16, 0.5);
+}
+
+.stat-label1 {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(4, 4, 4, 0.7);
+}
+
