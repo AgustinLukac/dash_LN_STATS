@@ -58,7 +58,30 @@ layout = dbc.Container([
                     'height': '100%'  # Asegura que ocupe todo el espacio de la fila
                 }
             )
-        ], width=6)
+        ], width=3),
+
+        # Columna para la foto del jugador
+        dbc.Col([
+            html.Div(
+                html.Img(
+                    id='jugador-foto',
+                    style={
+                        'width': '100%', 
+                        'height': 'auto', 
+                        'max-height': '150px', 
+                        'object-fit': 'contain'
+                    }
+                ),
+                style={
+                    #'border': '1px solid black', 
+                    'padding': '10px', 
+                    'text-align': 'center',
+                    'height': '100%'  # Asegura que ocupe todo el espacio de la fila
+                }
+            )
+        ], width=3),
+
+
     ]),
 
     dbc.Row([
@@ -303,6 +326,24 @@ def update_team_logo(selected_team):
         # Ruta del logo
         return f"/assets/logos/{selected_team}.png"
     return "/assets/logos/default.png"  # Imagen por defecto si no hay equipo seleccionado
+
+# Actualizar foto del jugador
+@callback(
+    Output('jugador-foto', 'src'),
+    Input('dropdown-player', 'value')
+)
+def update_team_logo(selected_player):
+    if selected_player:
+        # Filtrar el DataFrame por el jugador seleccionado
+        jugador_info = df[df['Jugadores'] == selected_player]
+        
+        # Verificar si existe un resultado y obtener la ruta de la imagen
+        if not jugador_info.empty:
+            ruta_imagen = jugador_info.iloc[0]['Imagen']  # Obtener el valor de la columna 'Imagen'
+            return f"/assets/Player_fotos/{ruta_imagen}.png"  # Construir la ruta completa
+    
+    # Retornar imagen por defecto si no hay jugador seleccionado o no se encuentra
+    return "/assets/logos/default.png"
 
 @callback(Output('graph_line', 'figure'),
           [Input('selector_fecha', 'start_date'),
