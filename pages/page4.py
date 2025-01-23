@@ -13,6 +13,8 @@ df_1 = pd.read_excel("assets/boxscore_partidos.xlsx")
 df_1['Fecha'] = pd.to_datetime(df_1['Fecha'], format='%d/%m/%Y', errors='coerce')
 df_1 = df_1.sort_values(by='Fecha', ascending=True)
 
+
+
 layout = dbc.Container([
     html.H1("Resumen de jugadores por equipos", className='text-center my-4'),
 
