@@ -1,6 +1,6 @@
 from dash import dcc, html
 from dash.dependencies import Input, Output
-from app import app
+from app import app, server
 from pages import home, page1, page2, page3, page4  # Importa las páginas
 
 # Define el layout principal con enlaces a cada página
