@@ -1,4 +1,9 @@
 
+@media (max-width: 768px) {
+  .dashboard-card {
+      margin-bottom: 10px;
+  }
+}
 
 .custom-date-picker input {
     font-weight: bold; /* Texto en negrita */

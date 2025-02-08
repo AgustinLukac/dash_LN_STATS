@@ -96,28 +96,28 @@ layout = dbc.Container([
                 id='points-card',
                 body=True,
                 className="dashboard-card"
-            ), width=3
+            ), xs=12, sm=6, md=3 
         ),
         dbc.Col(
             dbc.Card(
                 id='rebound-card',
                 body=True,
                 className="dashboard-card"
-            ), width=3
+            ), xs=12, sm=6, md=3 
         ),
         dbc.Col(
             dbc.Card(
                 id='assists-card',
                 body=True,
                 className="dashboard-card"
-            ), width=3
+            ), xs=12, sm=6, md=3 
         ),
         dbc.Col(
             dbc.Card(
                 id='min-card',
                 body=True,
                 className="dashboard-card"
-            ), width=3
+            ), xs=12, sm=6, md=3 
         ),
     ], class_name="my-4 g-3"),
 
