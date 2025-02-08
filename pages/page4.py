@@ -457,7 +457,16 @@ def actualizar_graph(fecha_min, fecha_max, selected_player):
                 ticktext=[str(i) for i in range(0, player_data['PTS'].max() + 11, 5)],  # Etiquetas visibles desde 0
                 zeroline=False),
         margin=dict(l=20, r=20, t=40, b=10),
-        template='plotly_dark'
+        template='plotly_dark',
+
+        # 🔹 Mueve la leyenda abajo del gráfico en móviles
+        legend=dict(
+            orientation="h",  # Leyenda horizontal
+            yanchor="top",  # Anclar arriba
+            y=-0.2,  # Ajustar para que quede fuera del gráfico
+            xanchor="center",  # Centrar
+            x=0.5
+        )
     )
 
     return fig
