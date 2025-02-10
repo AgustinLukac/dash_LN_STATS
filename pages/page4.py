@@ -170,16 +170,23 @@ layout = dbc.Container([
 
 ##### CALLBACKS #####
 
+def get_first_player(team):
+    players = df[df['Team'] == team].sort_values(by='MIN', ascending=False)
+    return players.iloc[0]['Jugadores'] if not players.empty else None
+
 # Actualizar Dropdown de jugadores
 @callback(
-    Output('dropdown-player', 'options'),
+    [Output('dropdown-player', 'options'),
+     Output('dropdown-player', 'value')],
     Input('dropdown-team', 'value')
 )
 def update_players_dropdown(selected_team):
     if selected_team:
-        jugadores = df[df['Team'] == selected_team]['Jugadores']
-        return [{'label': jugador, 'value': jugador} for jugador in jugadores]
-    return []
+        players = df[df['Team'] == selected_team]['Jugadores'].sort_values()
+        options = [{'label': jugador, 'value': jugador} for jugador in players]
+        first_player = get_first_player(selected_team)
+        return options, first_player
+    return [], None
 
 # Actualizar métricas del jugador
 @callback(
@@ -470,3 +477,10 @@ def actualizar_graph(fecha_min, fecha_max, selected_player):
     )
 
     return fig
+
+@callback(
+    [Output('selector_fecha', 'start_date'), Output('selector_fecha', 'end_date')],
+    Input('dropdown-player', 'value')
+)
+def reset_date_range(selected_player):
+    return df_1['Fecha'].min(), df_1['Fecha'].max()
