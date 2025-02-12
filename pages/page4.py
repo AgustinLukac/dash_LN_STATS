@@ -16,7 +16,51 @@ df_1 = df_1.sort_values(by='Fecha', ascending=True)
 
 
 layout = dbc.Container([
-    html.H1("Resumen de jugadores por equipos", className='text-center my-4'),
+
+    html.Header(
+    dbc.Navbar(
+        dbc.Container([
+            # Logo y título
+            html.A(
+                dbc.Row([
+                    dbc.Col(html.Img(src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg", height="40px")),
+                    dbc.Col(dbc.NavbarBrand("Mi Dashboard", className="ms-2", style={"font-size": "24px", "color": "white"})),
+                ], align="center", className="g-0"),
+                href="#",
+                style={"textDecoration": "none"},
+            ),
+
+             # Botón Toggler para menú en móviles
+            dbc.NavbarToggler(id="navbar-toggler", n_clicks=0),
+
+            dbc.Collapse(
+                dbc.Nav([
+                    dbc.NavItem(dbc.NavLink("🏠 Inicio", href="#", className="text-white")),
+                    dbc.NavItem(dbc.NavLink("📊 Reportes", href="#", className="text-white")),
+                    dbc.NavItem(dbc.NavLink("📈 Análisis", href="#", className="text-white")),
+                    dbc.NavItem(dbc.NavLink("⚙️ Configuración", href="#", className="text-white")),
+                ], className="ms-auto", navbar=True),
+                id="navbar-collapse",
+                is_open=False,  # Inicialmente cerrado en móviles
+                navbar=True
+            ),
+
+            # Ícono de usuario (opcional)
+            html.A(
+                html.Img(src="https://cdn-icons-png.flaticon.com/512/847/847969.png", height="30px"),
+                href="#",
+            )
+        ], fluid=True),
+        color="dark",
+        dark=True
+    ),
+    style={"position": "fixed", "width": "100%", "zIndex": "1000", "top": "0px"}  # Fija el header arriba
+),
+
+
+
+ 
+    html.H1("Resumen de jugadores por equipos", className='text-center my-4', style={"paddingTop": "80px"}),
 
     #### Dropdown para selección de Equipo y contenedor del logo
     dbc.Row([
