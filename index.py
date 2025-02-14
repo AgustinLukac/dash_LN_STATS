@@ -20,6 +20,9 @@ def display_page(pathname):
     elif pathname == '/page3':
         return page3.layout
     elif pathname == '/page4':
+
+
+        
         return page4.layout
     else:
         return home.layout  # Página por defecto
