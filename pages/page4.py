@@ -244,6 +244,9 @@ def update_players_dropdown(selected_team):
 def update_player_info(selected_player):
     if selected_player:
         metricas = df[df['Jugadores'] == selected_player].iloc[0]
+
+        perdidos_count = df_1[(df_1['Jugadores'] == selected_player) & (df_1['Resultado'] == 'Perdio')].shape[0]
+        gano_count = df_1[(df_1['Jugadores'] == selected_player) & (df_1['Resultado'] == 'Gano')].shape[0]
         points = metricas['PTS']
         rebounds = metricas['RT']
         rebounds_def = metricas['DEF REB']
@@ -266,6 +269,11 @@ def update_player_info(selected_player):
         to_p = metricas['TO %']
         usg = metricas['USG %']
         plays = metricas['PLAYS']
+        ppp = metricas['PPP']
+        efg = metricas['EFG %']
+        ts = metricas['TS %']
+        pj = metricas['PJ']
+        rtl = metricas['RTL %']
 
         return (
 
@@ -331,17 +339,47 @@ def update_player_info(selected_player):
                         className="stat-value"),
                     html.P("RD - RD %", className="stat-label")
                 ], className="text-center mb-3"),
-                # html.Div([
-                #     html.H4(f"{to} - {to_p*100:.1f} %",
-                #         className="stat-value"),
-                #     html.P("TO - TO %", className="stat-label")
-                # ], className="text-center mb-3"),
+                html.Div([
+                    html.H4(f" {rtl *100:.1f} %",
+                        className="stat-value"),
+                    html.P("RTL %", className="stat-label")
+                ], className="text-center mb-3"),
             ]),
 
             dbc.CardBody([
-                html.H3("N/A", className="stat-value"),
-                html.P("Rebotes", className="stat-label")
-            ])
+                html.H2("Performance", className="card-title", **{"data-text": "Performance"}),
+
+                html.Div([
+                    html.H4([
+                        f"{pj} - (",
+                        html.Span(f"{gano_count}", style={"color": "green"}),  # Verde
+                        " - ",
+                        html.Span(f"{perdidos_count}", style={"color": "red"}),  # Rojo
+                        ")"
+                    ], className="stat-value"),
+                    html.P("PJ", className="stat-label")
+                ], className="text-center mb-3"),
+
+                html.Div([
+                    html.H4(f"{ppp}",
+                        className="stat-value"),
+                    html.P("PPP", className="stat-label")
+                ], className="text-center mb-3"),
+
+                html.Div([
+                    html.H4(f"{efg * 100:.1f} %",
+                        className="stat-value"),
+                    html.P("EFG %", className="stat-label")
+                ], className="text-center mb-3"),
+
+                html.Div([
+                    html.H4(f"{ts * 100:.1f} %",
+                        className="stat-value"),
+                    html.P("TS %", className="stat-label")
+                ], className="text-center mb-3"),
+
+
+             ])
             
             
         )
@@ -364,7 +402,7 @@ def update_player_info(selected_player):
 
         dbc.CardBody([
             html.H3("N/A", className="stat-value"),
-            html.P("Rebotes", className="stat-label")
+            html.P("Performance", className="stat-label")
         ])
         
     )
@@ -521,6 +559,7 @@ def actualizar_graph(fecha_min, fecha_max, selected_player):
     )
 
     return fig
+
 
 @callback(
     [Output('selector_fecha', 'start_date'), Output('selector_fecha', 'end_date')],
