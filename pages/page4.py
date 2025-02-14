@@ -439,8 +439,11 @@ def update_team_logo(selected_player):
 @callback(Output('graph_line', 'figure'),
           [Input('selector_fecha', 'start_date'),
            Input('selector_fecha', 'end_date'),
-           Input('dropdown-player', 'value')])
-def actualizar_graph(fecha_min, fecha_max, selected_player):
+           Input('dropdown-player', 'value'),
+           Input('dropdown-team', 'value')])
+
+
+def actualizar_graph(fecha_min, fecha_max, selected_player,selected_team):
     # Filtrar el DataFrame por las fechas seleccionadas
     filtered_df = df_1[(df_1['Fecha'] >= fecha_min) & (df_1['Fecha'] <= fecha_max)]
 
@@ -448,7 +451,7 @@ def actualizar_graph(fecha_min, fecha_max, selected_player):
         return px.scatter(title="Selecciona un jugador para ver el gráfico")
 
     # Filtrar por el jugador seleccionado
-    player_data = filtered_df[filtered_df['Jugadores'] == selected_player]
+    player_data = filtered_df[(filtered_df['Jugadores'] == selected_player)&(filtered_df['Team'] == selected_team)]
 
     # Ordenar por fecha y asignar IDs secuenciales
     player_data = player_data.sort_values(by='Fecha').reset_index(drop=True)
