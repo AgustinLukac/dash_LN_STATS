@@ -1,3 +1,28 @@
+.Select-control {
+  background-color: #1e1e1e !important;
+}
+.Select-value-label {
+  color: white !important;
+}
+.Select-menu-outer {
+  background-color: #1e1e1e !important;
+}
+.Select-option {
+  background-color: #1e1e1e !important;
+  color: white !important;
+}
+.Select-option:hover {
+  background-color: #2b2b2b !important;
+}
+.Select-input > input {
+  color: white !important;
+}
+.Select-placeholder {
+  color: #aaa !important;
+}
+.Select-arrow {
+  border-color: white transparent transparent !important;
+}
 
 @media (max-width: 768px) {
   .dashboard-card {

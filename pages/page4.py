@@ -24,7 +24,7 @@ layout = dbc.Container([
             html.A(
                 dbc.Row([
                     dbc.Col(html.Img(src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg", height="40px")),
-                    dbc.Col(dbc.NavbarBrand("Mi Dashboard", className="ms-2", style={"font-size": "24px", "color": "white"})),
+                    dbc.Col(dbc.NavbarBrand("Dynamic Dashboard | AI - STATS", className="ms-2", style={"font-size": "24px", "color": "white"})),
                 ], align="center", className="g-0"),
                 href="#",
                 style={"textDecoration": "none"},
@@ -63,10 +63,32 @@ layout = dbc.Container([
     html.H1("Resumen de jugadores por equipos", className='text-center my-4', style={"paddingTop": "80px"}),
 
     #### Dropdown para selección de Equipo y contenedor del logo
+    # dbc.Row([
+    #     # Columna para los dropdowns
+    #     dbc.Col([
+    #         html.Label("Selecciona un equipo", className='form-label'),
+    #         dcc.Dropdown(
+    #             id='dropdown-team',
+    #             options=[
+    #                 {'label': equipo, 'value': equipo}
+    #                 for equipo in sorted(df['Team'].unique())
+    #             ],
+    #             placeholder="Selecciona un equipo",
+    #             className="mb-3"
+    #         ),
+    #         html.Label("Selecciona un jugador", className='form-label'),
+    #         dcc.Dropdown(
+    #             id='dropdown-player',
+    #             placeholder="Selecciona un jugador",
+    #             className="mb-3"
+    #         ),
+            
+    #     ], width=6),
     dbc.Row([
-        # Columna para los dropdowns
         dbc.Col([
-            html.Label("Selecciona un equipo", className='form-label'),
+            html.Label("Selecciona un equipo", 
+                    className='form-label',
+                    style={'color': 'white'}),
             dcc.Dropdown(
                 id='dropdown-team',
                 options=[
@@ -74,15 +96,28 @@ layout = dbc.Container([
                     for equipo in sorted(df['Team'].unique())
                 ],
                 placeholder="Selecciona un equipo",
-                className="mb-3"
+                className="mb-3",
+                clearable=True,
+                searchable=True,
+                style={
+                    'backgroundColor': '#1e1e1e',
+                    'color': 'white'
+                }
             ),
-            html.Label("Selecciona un jugador", className='form-label'),
+            html.Label("Selecciona un jugador", 
+                    className='form-label',
+                    style={'color': 'white'}),
             dcc.Dropdown(
                 id='dropdown-player',
                 placeholder="Selecciona un jugador",
-                className="mb-3"
+                className="mb-3",
+                clearable=True,
+                searchable=True,
+                style={
+                    'backgroundColor': '#1e1e1e',
+                    'color': 'white'
+                }
             ),
-            
         ], width=6),
 
         # Columna para el logo
@@ -239,14 +274,16 @@ def update_players_dropdown(selected_team):
      Output('assists-card', 'children'),
      Output('min-card', 'children'),
     ],
-    Input('dropdown-player', 'value')
-)
-def update_player_info(selected_player):
-    if selected_player:
-        metricas = df[df['Jugadores'] == selected_player].iloc[0]
+    Input('dropdown-player', 'value'),
+    Input('dropdown-team', 'value')
 
-        perdidos_count = df_1[(df_1['Jugadores'] == selected_player) & (df_1['Resultado'] == 'Perdio')].shape[0]
-        gano_count = df_1[(df_1['Jugadores'] == selected_player) & (df_1['Resultado'] == 'Gano')].shape[0]
+)
+def update_player_info(selected_player,selected_team):
+    if selected_player:
+        metricas = df[(df['Jugadores'] == selected_player)&(df['Team'] == selected_team)].iloc[0]
+
+        perdidos_count = df_1[(df_1['Team'] == selected_team)&(df_1['Jugadores'] == selected_player) & (df_1['Resultado'] == 'Perdio')].shape[0]
+        gano_count = df_1[(df_1['Team'] == selected_team)&(df_1['Jugadores'] == selected_player) & (df_1['Resultado'] == 'Gano')].shape[0]
         points = metricas['PTS']
         rebounds = metricas['RT']
         rebounds_def = metricas['DEF REB']
@@ -351,11 +388,14 @@ def update_player_info(selected_player):
 
                 html.Div([
                     html.H4([
-                        f"{pj} - (",
-                        html.Span(f"{gano_count}", style={"color": "green","font-size": "0.8em"}),  # Verde
-                        "/",
-                        html.Span(f"{perdidos_count}", style={"color": "red","font-size": "0.8em"}),  # Rojo
-                        ")"
+                        f"{pj} ",
+                        html.Span([
+                            " (",
+                            html.Span(f"{gano_count}", style={"color": "green", "opacity": "0.85"}),
+                            " - ",
+                            html.Span(f"{perdidos_count}", style={"color": "red", "opacity": "0.85"}),
+                            ")"
+                        ], style={"font-size": "0.7em", "opacity": "0.7"})
                     ], className="stat-value"),
                     html.P("PJ", className="stat-label")
                 ], className="text-center mb-3"),
@@ -386,22 +426,22 @@ def update_player_info(selected_player):
     return (
 
         dbc.CardBody([
-            html.H3("N/A", className="stat-value"),
+            html.H3("- -", className="stat-value"),
             html.P("Anotación", className="stat-label")
         ]),
 
         dbc.CardBody([
-            html.H3("N/A", className="stat-value"),
+            html.H3("- -", className="stat-value"),
             html.P("Posesión", className="stat-label")
         ]),
 
         dbc.CardBody([
-            html.H3("N/A", className="stat-value"),
+            html.H3("- -", className="stat-value"),
             html.P("Minutos", className="stat-label")
         ]),
 
         dbc.CardBody([
-            html.H3("N/A", className="stat-value"),
+            html.H3("- -", className="stat-value"),
             html.P("Performance", className="stat-label")
         ])
         
@@ -444,11 +484,58 @@ def update_team_logo(selected_player):
 
 
 def actualizar_graph(fecha_min, fecha_max, selected_player,selected_team):
+
     # Filtrar el DataFrame por las fechas seleccionadas
     filtered_df = df_1[(df_1['Fecha'] >= fecha_min) & (df_1['Fecha'] <= fecha_max)]
 
     if not selected_player:
-        return px.scatter(title="Selecciona un jugador para ver el gráfico")
+        fig = px.scatter(template="plotly_white")  # Cambiamos a template blanco para mejor contraste
+
+        fig.update_layout(
+            title=dict(
+                text="📊 Selecciona un jugador para visualizar sus estadísticas 📈 ",
+                x=0.5,
+                y=0.5,
+                xanchor="center",
+                yanchor="middle",
+                font=dict(
+                    size=20,
+                    color="#6B7280",  # Color gris medio para mejor legibilidad
+                    family="Arial, sans-serif"
+                ),
+            ),
+            xaxis=dict(
+                showgrid=False,
+                showticklabels=False,
+                zeroline=False
+            ),
+            yaxis=dict(
+                showgrid=False,
+                showticklabels=False,
+                zeroline=False
+            ),
+            showlegend=False,
+            plot_bgcolor='white',
+            paper_bgcolor='white',
+            margin=dict(t=100, b=100),  # Añadimos más margen arriba y abajo
+        )
+
+        # Añadimos un rectángulo semitransparente como fondo decorativo
+        fig.add_shape(
+            type="rect",
+            x0=0.2,
+            y0=0.2,
+            x1=0.8,
+            y1=0.8,
+            line=dict(
+                color="#E5E7EB",
+                width=2,
+            ),
+            fillcolor="rgba(243, 244, 246, 0.5)",
+            layer="below"
+        )
+
+        return fig
 
     # Filtrar por el jugador seleccionado
     player_data = filtered_df[(filtered_df['Jugadores'] == selected_player)&(filtered_df['Team'] == selected_team)]
