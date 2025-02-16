@@ -352,9 +352,9 @@ def update_player_info(selected_player):
                 html.Div([
                     html.H4([
                         f"{pj} - (",
-                        html.Span(f"{gano_count}", style={"color": "green"}),  # Verde
-                        " - ",
-                        html.Span(f"{perdidos_count}", style={"color": "red"}),  # Rojo
+                        html.Span(f"{gano_count}", style={"color": "green","font-size": "0.8em"}),  # Verde
+                        "/",
+                        html.Span(f"{perdidos_count}", style={"color": "red","font-size": "0.8em"}),  # Rojo
                         ")"
                     ], className="stat-value"),
                     html.P("PJ", className="stat-label")
