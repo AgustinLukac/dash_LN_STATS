@@ -24,7 +24,7 @@ layout = dbc.Container([
             html.A(
                 dbc.Row([
                     dbc.Col(html.Img(src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg", height="40px")),
-                    dbc.Col(dbc.NavbarBrand("Dynamic Dashboard | AI - STATS", className="ms-2", style={"font-size": "24px", "color": "white"})),
+                    dbc.Col(dbc.NavbarBrand("Dashboard | AI - STATS", className="ms-2", style={"font-size": "24px", "color": "white"})),
                 ], align="center", className="g-0"),
                 href="#",
                 style={"textDecoration": "none"},
@@ -62,28 +62,6 @@ layout = dbc.Container([
  
     html.H1("Resumen de jugadores por equipos", className='text-center my-4', style={"paddingTop": "80px"}),
 
-    #### Dropdown para selección de Equipo y contenedor del logo
-    # dbc.Row([
-    #     # Columna para los dropdowns
-    #     dbc.Col([
-    #         html.Label("Selecciona un equipo", className='form-label'),
-    #         dcc.Dropdown(
-    #             id='dropdown-team',
-    #             options=[
-    #                 {'label': equipo, 'value': equipo}
-    #                 for equipo in sorted(df['Team'].unique())
-    #             ],
-    #             placeholder="Selecciona un equipo",
-    #             className="mb-3"
-    #         ),
-    #         html.Label("Selecciona un jugador", className='form-label'),
-    #         dcc.Dropdown(
-    #             id='dropdown-player',
-    #             placeholder="Selecciona un jugador",
-    #             className="mb-3"
-    #         ),
-            
-    #     ], width=6),
     dbc.Row([
         dbc.Col([
             html.Label("Selecciona un equipo", 
