@@ -96,6 +96,20 @@ layout = dbc.Container([
                     'color': 'white'
                 }
             ),
+            html.Label("Seleccionar Condición", 
+                    className='form-label',
+                    style={'color': 'white'}),
+            dcc.Dropdown(
+                id='dropdown-condition',
+                placeholder="Seleccionar Condición",
+                className="mb-3",
+                clearable=True,
+                searchable=True,
+                style={
+                    'backgroundColor': '#1e1e1e',
+                    'color': 'white'
+                }
+            ),
         ], width=6),
 
         # Columna para el logo
@@ -245,6 +259,33 @@ def update_players_dropdown(selected_team):
         return options, first_player
     return [], None
 
+# Actualizar Dropdown de Condcion
+@callback(
+    [Output('dropdown-condition', 'options'),
+     Output('dropdown-condition', 'value')],
+    Input('dropdown-player', 'value')
+)
+def update_condition_dropdown(selected_condition):
+    if selected_condition:
+        # Filtramos df_1 para obtener las condiciones del jugador seleccionado
+        condiciones = df_1[df_1['Jugadores'] == selected_condition]['Condición'].unique()
+        
+        # Convertimos a lista y ordenamos
+        condiciones = sorted(condiciones)
+
+        # Agregamos la opción "Todos" manualmente
+        condiciones.insert(0, "Todos")
+
+        # Creamos la lista de opciones para el Dropdown
+        options = [{'label': condicion, 'value': condicion} for condicion in condiciones]
+
+        # Seleccionamos "Todos" como valor por defecto
+        return options, "Todos"
+
+    return [], None  # Si no hay jugador seleccionado, vaciamos el dropdown
+
+
+
 # Actualizar métricas del jugador
 @callback(
     [ Output('points-card', 'children'),
@@ -262,6 +303,8 @@ def update_player_info(selected_player,selected_team):
 
         perdidos_count = df_1[(df_1['Team'] == selected_team)&(df_1['Jugadores'] == selected_player) & (df_1['Resultado'] == 'Perdio')].shape[0]
         gano_count = df_1[(df_1['Team'] == selected_team)&(df_1['Jugadores'] == selected_player) & (df_1['Resultado'] == 'Gano')].shape[0]
+        
+        
         points = metricas['PTS']
         rebounds = metricas['RT']
         rebounds_def = metricas['DEF REB']
