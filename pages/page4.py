@@ -294,12 +294,26 @@ def update_condition_dropdown(selected_condition):
      Output('min-card', 'children'),
     ],
     Input('dropdown-player', 'value'),
-    Input('dropdown-team', 'value')
+    Input('dropdown-team', 'value'),
+    Input('dropdown-condition', 'value')
 
 )
-def update_player_info(selected_player,selected_team):
+def update_player_info(selected_player,selected_team,selected_condition):
+        
+    # # Si la condición es "Todos", se usa df
+    # if selected_condition == "Todos":
+    #     metricas = df[(df['Jugadores'] == selected_player) & (df['Team'] == selected_team)]
+
+    # else:
+    #     metricas = df_1[(df_1['Jugadores'] == selected_player) & 
+    #                      (df_1['Condición'] == selected_condition) & 
+    #                      (df_1['Team'] == selected_team)]
+        
+    #     # Hacemos un groupby para calcular los promedios de las métricas
+    #     metricas = metricas.groupby(['Jugadores', 'Team']).mean(numeric_only=True).reset_index()
     if selected_player:
         metricas = df[(df['Jugadores'] == selected_player)&(df['Team'] == selected_team)].iloc[0]
+        
 
         perdidos_count = df_1[(df_1['Team'] == selected_team)&(df_1['Jugadores'] == selected_player) & (df_1['Resultado'] == 'Perdio')].shape[0]
         gano_count = df_1[(df_1['Team'] == selected_team)&(df_1['Jugadores'] == selected_player) & (df_1['Resultado'] == 'Gano')].shape[0]
