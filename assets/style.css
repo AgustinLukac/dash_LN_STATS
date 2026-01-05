@@ -213,3 +213,14 @@
   color: rgba(4, 4, 4, 0.7);
 }
 
+.custom-switch .form-check-input {
+    width: 48px;
+    height: 24px;
+    background-color: #e0e0e0;
+    border: none;
+}
+
+.custom-switch .form-check-input:checked {
+    background-color: #2ecc71;
+}
+

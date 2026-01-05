@@ -111,6 +111,19 @@ layout = dbc.Container([
                     'color': 'white'
                 }
             ),
+
+            
+            html.Label("Offense / Defense"),
+            dbc.Switch(
+                        id="offense-defense",
+                        #label="Offense",
+                        value=True,
+                        className="custom-switch"
+            ),
+            
+
+
+
         ], width=6),
 
         # Columna para el logo
@@ -195,7 +208,15 @@ layout = dbc.Container([
 
     html.Div([
     html.H4("Gráficos de rendimientos por partido", className='text-center my-4'),
+    #############################################
+    
+  
 
+
+
+
+
+    ##############################################
     html.Div(
         [
             html.Label(
