@@ -279,6 +279,10 @@ layout = dbc.Container([
                         'margin-left': '10px',
                     }
                 )
+
+
+
+
             ],
             style={
                 'margin-bottom': '20px',
@@ -290,7 +294,7 @@ layout = dbc.Container([
             }
         ),
 
-        dcc.Graph(id='graph_line'),
+        dcc.Graph(id='graph_line11'),
 
         html.Div(style={
             'margin-bottom': '20px',
@@ -301,9 +305,42 @@ layout = dbc.Container([
             'box-shadow': '0px 2px 5px rgba(0, 0, 0, 0.1)'
         }),
 
-        dcc.Graph(id='graph_line11')
+
+
+
+
+
+
+        dcc.Graph(id='graph_line')
 
     ]),
+
+
+    ################ ELEGIR LA MÉTRICA QUE QUEREMOS VER LA PROGRESIÓN ##############################
+    # #html.Label("Métrica del gráfico", className='form-label', style={'color': 'white'}),
+    # dcc.Dropdown(
+    #     id='dropdown-metric',
+    #     options=[
+    #         {"label": "3FG %", "value": "3FG %"},
+    #         {"label": "PTS", "value": "PTS"},
+    #         {"label": "AST", "value": "AST"},
+    #         {"label": "RT", "value": "RT"},
+    #         {"label": "PPP", "value": "PPP"},
+    #         {"label": "USG %", "value": "USG %"},
+    #         {"label": "EFG %", "value": "EFG %"},
+    #         {"label": "TS %", "value": "TS %"},
+    #         {"label": "TO", "value": "TO"},
+    #         {"label": "TO %", "value": "TO %"},
+    #         {"label": "PLAYS", "value": "PLAYS"},
+    #         {"label": "MIN", "value": "MIN"},
+    #     ],
+    #     value="3FG %",  # por defecto como ahora
+    #     clearable=False,
+    #     searchable=True,
+    #     className="mb-6",
+    #     style={'backgroundColor': '#1e1e1e', 'color': 'white'}
+    # ),
+
 
 ], fluid=True)
 
@@ -876,8 +913,3 @@ def actualizar_graph_1(fecha_min, fecha_max, selected_player, selected_team, sel
 def toggle_navbar(n):
     return bool(n % 2)
 
-# =========================
-# Run
-# =========================
-# if __name__ == "__main__":
-#     app.run_server(debug=True)
