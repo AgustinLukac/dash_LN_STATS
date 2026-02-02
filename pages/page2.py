@@ -18,11 +18,7 @@ df_1 = pd.read_excel("assets/boxscore_partidos.xlsx")      # boxscore por partid
 df_1['Fecha'] = pd.to_datetime(df_1['Fecha'], format='%d/%m/%Y', errors='coerce')
 df_1 = df_1.sort_values(by='Fecha', ascending=True)
 
-# =========================
-# APP (si lo usás como page, podés ignorar esto)
-# =========================
-# app = Dash(__name__, external_stylesheets=[dbc.themes.DARKLY])
-# app.layout = layout
+
 
 # =========================
 # HELPERS
